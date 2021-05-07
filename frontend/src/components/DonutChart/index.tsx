@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import Chart from "react-apexcharts";
 import api from "services/api";
 import { SaleSum } from "types/sale";
@@ -6,19 +7,26 @@ type ChartData = { labels: string[]; series: number[]; }
 
 function DonutChart() {
 
-  let chartData: ChartData = { labels: [], series: [] };
+  const [chartData, setChartData] = useState<ChartData>({ labels: [], series: [] });
 
-  api.get('/sales/amount-by-seller').then(response => {
+  //forma errada
+  // let chartData: ChartData = { labels: [], series: [] };
 
-    const data = response.data as SaleSum[];
+  useEffect(() => {
+    api.get('/sales/amount-by-seller').then(response => {
 
-    const labelData = data.map(l => l.sellerName);
-    const seriesData = data.map(s => s.sum);
+      const data = response.data as SaleSum[];
 
-    chartData = { labels: labelData, series: seriesData };
+      const labelData = data.map(l => l.sellerName);
+      const seriesData = data.map(s => s.sum);
 
-    console.log(chartData);
-  });
+      setChartData({ labels: labelData, series: seriesData });
+
+      // console.log(chartData);
+    });
+  }, [])
+
+
 
 
   // const mockData = {
